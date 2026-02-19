@@ -1,54 +1,122 @@
 import mongoose from "mongoose";
 import User from "../models/User.js";
 import Order from "../models/Order.js";
+import Holding from "../models/Holding.js";
 
-export const executeOrder = async ({ userId, symbol, quantity, price, type }) => {
+export const executeOrder = async ({
+  userId,
+  symbol,
+  quantity,
+  price,
+  type,
+}) => {
+  // ===== INPUT VALIDATION FIRST (No DB session yet) =====
+  if (!symbol || !quantity || !price || !type) {
+    throw new Error("Missing order fields");
+  }
+
+  quantity = Number(quantity);
+  price = Number(price);
+
+  if (quantity <= 0 || price <= 0) {
+    throw new Error("Invalid quantity or price");
+  }
+
+  if (!["BUY", "SELL"].includes(type)) {
+    throw new Error("Invalid order type");
+  }
+
   const totalAmount = quantity * price;
 
   const session = await mongoose.startSession();
-  session.startTransaction();
 
   try {
-    const user = await User.findById(userId).session(session);
+    let result;
 
-    if (!user) {
-      throw new Error("User not found");
-    }
+    await session.withTransaction(async () => {
+      const user = await User.findById(userId).session(session);
 
-    if (type === "BUY") {
-      if (user.balance < totalAmount) {
-        throw new Error("Insufficient balance");
+      if (!user) {
+        throw new Error("User not found");
       }
 
-      user.balance -= totalAmount;
-    }
+      let holding = await Holding.findOne({
+        user: user._id,
+        symbol,
+      }).session(session);
 
-    await user.save({ session });
+      // ================= BUY =================
+      if (type === "BUY") {
+        if (user.balance < totalAmount) {
+          throw new Error("Insufficient balance");
+        }
 
-    const order = await Order.create(
-      [
-        {
-          user: user._id,
-          symbol,
-          quantity,
-          price,
-          totalAmount,
-          type,
-        },
-      ],
-      { session }
-    );
+        // Deduct balance
+        user.balance -= totalAmount;
 
-    await session.commitTransaction();
-    session.endSession();
+        if (!holding) {
+          holding = new Holding({
+            user: user._id,
+            symbol,
+            quantity,
+            averagePrice: price,
+          });
+        } else {
+          const totalCost =
+            holding.quantity * holding.averagePrice + totalAmount;
 
-    return {
-      order: order[0],
-      balance: user.balance,
-    };
+          const newQuantity = holding.quantity + quantity;
+
+          holding.averagePrice = totalCost / newQuantity;
+          holding.quantity = newQuantity;
+        }
+
+        await holding.save({ session });
+      }
+
+      // ================= SELL =================
+      if (type === "SELL") {
+        if (!holding || holding.quantity < quantity) {
+          throw new Error("Insufficient holdings");
+        }
+
+        holding.quantity -= quantity;
+        user.balance += totalAmount;
+
+        if (holding.quantity === 0) {
+          await holding.deleteOne({ session });
+        } else {
+          await holding.save({ session });
+        }
+      }
+
+      await user.save({ session });
+
+      const order = await Order.create(
+        [
+          {
+            user: user._id,
+            symbol,
+            quantity,
+            price,
+            totalAmount,
+            type,
+            status: "EXECUTED",
+          },
+        ],
+        { session }
+      );
+
+      result = {
+        order: order[0],
+        balance: user.balance,
+      };
+    });
+
+    return result;
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
     throw error;
+  } finally {
+    session.endSession();
   }
 };
