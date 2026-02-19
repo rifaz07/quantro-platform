@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import walletRoutes from "./routes/walletRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
+import holdingRoutes from "./routes/holdingRoutes.js";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/transactions", transactionRoutes);
+app.use("/api/holdings", holdingRoutes);
 // Error Handling Middleware
 app.use(errorHandler);
 
