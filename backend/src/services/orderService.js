@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import User from "../models/User.js";
 import Order from "../models/Order.js";
 import Holding from "../models/Holding.js";
+import Transaction from "../models/Transaction.js";
 
 export const executeOrder = async ({
   userId,
@@ -10,7 +11,8 @@ export const executeOrder = async ({
   price,
   type,
 }) => {
-  // ===== INPUT VALIDATION FIRST (No DB session yet) =====
+  //INPUT VALIDATION
+
   if (!symbol || !quantity || !price || !type) {
     throw new Error("Missing order fields");
   }
@@ -35,24 +37,36 @@ export const executeOrder = async ({
 
     await session.withTransaction(async () => {
       const user = await User.findById(userId).session(session);
-
-      if (!user) {
-        throw new Error("User not found");
-      }
+      if (!user) throw new Error("User not found");
 
       let holding = await Holding.findOne({
         user: user._id,
         symbol,
       }).session(session);
 
-      // ================= BUY =================
+      //BUY
       if (type === "BUY") {
         if (user.balance < totalAmount) {
           throw new Error("Insufficient balance");
         }
 
-        // Deduct balance
         user.balance -= totalAmount;
+
+        // Ledger entry (DEBIT)
+        await Transaction.create(
+          [
+            {
+              user: user._id,
+              type: "BUY",
+              direction: "DEBIT",
+              amount: totalAmount,
+              balanceAfter: user.balance,
+              reference: symbol,
+              description: `Bought ${quantity} ${symbol}`,
+            },
+          ],
+          { session }
+        );
 
         if (!holding) {
           holding = new Holding({
@@ -74,7 +88,7 @@ export const executeOrder = async ({
         await holding.save({ session });
       }
 
-      // ================= SELL =================
+      // SELL 
       if (type === "SELL") {
         if (!holding || holding.quantity < quantity) {
           throw new Error("Insufficient holdings");
@@ -82,6 +96,22 @@ export const executeOrder = async ({
 
         holding.quantity -= quantity;
         user.balance += totalAmount;
+
+        // Ledger entry (CREDIT)
+        await Transaction.create(
+          [
+            {
+              user: user._id,
+              type: "SELL",
+              direction: "CREDIT",
+              amount: totalAmount,
+              balanceAfter: user.balance,
+              reference: symbol,
+              description: `Sold ${quantity} ${symbol}`,
+            },
+          ],
+          { session }
+        );
 
         if (holding.quantity === 0) {
           await holding.deleteOne({ session });
@@ -114,8 +144,6 @@ export const executeOrder = async ({
     });
 
     return result;
-  } catch (error) {
-    throw error;
   } finally {
     session.endSession();
   }
