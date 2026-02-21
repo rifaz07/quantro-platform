@@ -5,16 +5,32 @@ export default function WalletCard({ balance, loading, onRefresh }) {
   const [amount, setAmount] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const validateAmount = () => {
+    const num = Number(amount);
+
+    if (!num || num <= 0) {
+      setError("Enter a valid amount greater than 0");
+      return false;
+    }
+
+    return true;
+  };
 
   const handleDeposit = async () => {
-    if (!amount || submitting) return;
+    if (submitting) return;
+    setError("");
+    setSuccess("");
+
+    if (!validateAmount()) return;
 
     try {
       setSubmitting(true);
-      setError("");
 
       await depositMoney({ amount: Number(amount) });
 
+      setSuccess("Deposit successful");
       setAmount("");
       onRefresh();
     } catch (err) {
@@ -25,14 +41,18 @@ export default function WalletCard({ balance, loading, onRefresh }) {
   };
 
   const handleWithdraw = async () => {
-    if (!amount || submitting) return;
+    if (submitting) return;
+    setError("");
+    setSuccess("");
+
+    if (!validateAmount()) return;
 
     try {
       setSubmitting(true);
-      setError("");
 
       await withdrawMoney({ amount: Number(amount) });
 
+      setSuccess("Withdraw successful");
       setAmount("");
       onRefresh();
     } catch (err) {
@@ -43,9 +63,11 @@ export default function WalletCard({ balance, loading, onRefresh }) {
   };
 
   return (
-    <div>
+    <div style={{ padding: "16px", border: "1px solid #ddd", borderRadius: "8px" }}>
       <h2>Wallet Balance</h2>
-      <p>{loading ? "Loading..." : balance}</p>
+      <p style={{ fontSize: "20px", fontWeight: "bold" }}>
+        {loading ? "Loading..." : balance}
+      </p>
 
       <input
         type="number"
@@ -53,9 +75,14 @@ export default function WalletCard({ balance, loading, onRefresh }) {
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         disabled={submitting}
+        style={{ padding: "8px", marginRight: "8px" }}
       />
 
-      <button onClick={handleDeposit} disabled={submitting}>
+      <button
+        onClick={handleDeposit}
+        disabled={submitting}
+        style={{ marginRight: "6px" }}
+      >
         {submitting ? "Processing..." : "Deposit"}
       </button>
 
@@ -63,7 +90,8 @@ export default function WalletCard({ balance, loading, onRefresh }) {
         {submitting ? "Processing..." : "Withdraw"}
       </button>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "red", marginTop: "8px" }}>{error}</p>}
+      {success && <p style={{ color: "green", marginTop: "8px" }}>{success}</p>}
     </div>
   );
 }
