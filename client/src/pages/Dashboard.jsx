@@ -3,6 +3,7 @@ import { getWallet } from "../api/walletApi";
 import { getHoldings } from "../api/holdingsApi";
 import { getTransactions } from "../api/transactionsApi";
 import OrderForm from "../components/trading/OrderForm";
+import WalletCard from "../components/wallet/walletCard";
 
 export default function Dashboard() {
   const [balance, setBalance] = useState(null);
@@ -10,7 +11,6 @@ export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Centralized fetch function
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
@@ -38,16 +38,21 @@ export default function Dashboard() {
     <div>
       <h1>Dashboard</h1>
 
-      {/* ORDER FORM COMPONENT  */}
+      {/* ORDER FORM */}
       <OrderForm onOrderSuccess={fetchDashboardData} />
 
       <hr />
 
-      {/* WALLET */}
-      <h2>Wallet Balance</h2>
-      <p>{loading ? "Loading..." : balance}</p>
+      {/* WALLET COMPONENT */}
+      <WalletCard
+        balance={balance}
+        loading={loading}
+        onRefresh={fetchDashboardData}
+      />
 
-      {/*HOLDINGS*/}
+      <hr />
+
+      {/* HOLDINGS */}
       <h2>Holdings</h2>
       {holdings.length === 0 ? (
         <p>No holdings</p>
@@ -62,7 +67,9 @@ export default function Dashboard() {
         ))
       )}
 
-      {/*TRANSACTIONS*/}
+      <hr />
+
+      {/* TRANSACTIONS */}
       <h2>Transactions</h2>
       {transactions.length === 0 ? (
         <p>No transactions</p>
