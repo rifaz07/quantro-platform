@@ -5,6 +5,13 @@ import { getTransactions } from "../api/transactionsApi";
 import OrderForm from "../components/trading/OrderForm";
 import WalletCard from "../components/wallet/walletCard";
 
+// Currency formatter
+const formatCurrency = (value) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+  }).format(value);
+
 export default function Dashboard() {
   const [balance, setBalance] = useState(null);
   const [holdings, setHoldings] = useState([]);
@@ -22,7 +29,14 @@ export default function Dashboard() {
       setHoldings(holdingsRes.data);
 
       const transactionsRes = await getTransactions();
-      setTransactions(transactionsRes.data.data || []);
+      const txData = transactionsRes.data.data || [];
+
+      // Sort newest first
+      txData.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      setTransactions(txData);
     } catch (error) {
       console.error("Dashboard fetch error:", error);
     } finally {
@@ -43,9 +57,9 @@ export default function Dashboard() {
 
       <hr />
 
-      {/* WALLET COMPONENT */}
+      {/* WALLET */}
       <WalletCard
-        balance={balance}
+        balance={balance !== null ? formatCurrency(balance) : null}
         loading={loading}
         onRefresh={fetchDashboardData}
       />
@@ -61,7 +75,7 @@ export default function Dashboard() {
           <div key={h._id}>
             <p>
               {h.symbol} — Qty: {h.quantity} — Avg:{" "}
-              {Number(h.averagePrice).toFixed(2)}
+              {formatCurrency(h.averagePrice)}
             </p>
           </div>
         ))
@@ -77,7 +91,8 @@ export default function Dashboard() {
         transactions.map((t) => (
           <div key={t._id}>
             <p>
-              {t.type} — {t.amount} — Balance After: {t.balanceAfter}
+              {t.type} — {formatCurrency(t.amount)} — Balance After:{" "}
+              {formatCurrency(t.balanceAfter)}
             </p>
           </div>
         ))
