@@ -4,87 +4,83 @@ import { Link } from "react-router-dom";
 
 export default function Landing() {
   return (
-    <>
+    <div className="min-h-screen bg-white flex flex-col">
+
       <PublicNavbar />
 
-      {/* HERO */}
-      <section className="max-w-6xl mx-auto py-24 px-6 text-center">
-        <h1 className="text-5xl md:text-6xl font-bold mb-6">
-          Invest Smart. Invest Simple.
-        </h1>
-        <p className="text-gray-600 text-lg md:text-xl mb-8">
-          Modern brokerage platform built for transparency and speed.
-        </p>
-        <Link
-          to="/register"
-          className="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition"
-        >
-          Open Account
-        </Link>
-      </section>
+      {/* HERO SECTION */}
+      <section className="bg-gradient-to-br from-blue-50 to-white">
+        <div className="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12 items-center">
 
-      {/* STATS */}
-      <section className="bg-gray-50 py-20">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 text-center px-6">
+          {/* LEFT SIDE */}
           <div>
-            <h2 className="text-4xl font-bold text-blue-600">1M+</h2>
-            <p className="text-gray-600 mt-2">Active Investors</p>
+            <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-6">
+              Invest Smart. <br /> Trade Confidently.
+            </h1>
+
+            <p className="text-lg text-gray-600 mb-8">
+              Fintech Loop is a modern brokerage platform built for speed,
+              transparency, and powerful analytics.
+            </p>
+
+            <div className="flex gap-4">
+              <Link
+                to="/register"
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition"
+              >
+                Get Started
+              </Link>
+
+              <Link
+                to="/products"
+                className="border border-gray-300 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition"
+              >
+                Explore Products
+              </Link>
+            </div>
           </div>
-          <div>
-            <h2 className="text-4xl font-bold text-blue-600">₹10B+</h2>
-            <p className="text-gray-600 mt-2">Daily Volume</p>
+
+          {/* RIGHT SIDE IMAGE */}
+          <div className="flex justify-center">
+            <img
+              src="https://images.unsplash.com/photo-1640340434855-6084b1f4901c"
+              alt="Trading Dashboard"
+              className="rounded-xl shadow-2xl"
+            />
           </div>
-          <div>
-            <h2 className="text-4xl font-bold text-blue-600">99.9%</h2>
-            <p className="text-gray-600 mt-2">Platform Uptime</p>
-          </div>
+
         </div>
       </section>
 
-      {/* PRODUCTS PREVIEW */}
-      <section className="max-w-6xl mx-auto py-20 px-6 text-center">
-        <h2 className="text-3xl font-bold mb-12">
-          Powerful tools for smart investors
-        </h2>
+      {/* FEATURES SECTION */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-12 text-center">
 
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="p-6 border rounded-xl hover:shadow-lg transition">
-            <h3 className="font-semibold text-lg mb-2">Real-time Trading</h3>
-            <p className="text-gray-600 text-sm">
-              Fast and secure order execution with live updates.
+          <div>
+            <h3 className="text-xl font-semibold mb-3">Zero Hidden Fees</h3>
+            <p className="text-gray-600">
+              Transparent pricing with no surprises.
             </p>
           </div>
 
-          <div className="p-6 border rounded-xl hover:shadow-lg transition">
-            <h3 className="font-semibold text-lg mb-2">Portfolio Insights</h3>
-            <p className="text-gray-600 text-sm">
-              Track holdings, profit/loss and performance analytics.
+          <div>
+            <h3 className="text-xl font-semibold mb-3">Advanced Analytics</h3>
+            <p className="text-gray-600">
+              Real-time data and intelligent portfolio insights.
             </p>
           </div>
 
-          <div className="p-6 border rounded-xl hover:shadow-lg transition">
-            <h3 className="font-semibold text-lg mb-2">Low Brokerage</h3>
-            <p className="text-gray-600 text-sm">
-              Transparent pricing with zero hidden fees.
+          <div>
+            <h3 className="text-xl font-semibold mb-3">Secure Infrastructure</h3>
+            <p className="text-gray-600">
+              Enterprise-grade security for your investments.
             </p>
           </div>
+
         </div>
-      </section>
-
-      {/* CTA */}
-      <section className="bg-blue-600 py-20 text-center text-white">
-        <h2 className="text-3xl font-bold mb-6">
-          Ready to start investing?
-        </h2>
-        <Link
-          to="/register"
-          className="bg-white text-blue-600 px-8 py-3 rounded-md font-semibold hover:bg-gray-100 transition"
-        >
-          Create Free Account
-        </Link>
       </section>
 
       <PublicFooter />
-    </>
+    </div>
   );
 }
