@@ -9,7 +9,7 @@ export default function About() {
 
       <main className="flex-1">
 
-        {/* PREMIUM HERO */}
+        {/* HERO SECTION */}
         <section className="bg-gradient-to-br from-gray-50 to-white py-24">
           <div className="max-w-6xl mx-auto px-6 text-center">
             <h1 className="text-5xl font-bold text-gray-900 mb-6">
@@ -53,6 +53,46 @@ export default function About() {
               <p className="text-gray-600">
                 Transparency, innovation, and long-term growth.
               </p>
+            </div>
+
+          </div>
+        </section>
+
+        {/* FOUNDER SECTION */}
+        <section className="bg-gray-50 py-24">
+          <div className="max-w-5xl mx-auto px-6 text-center">
+
+            <h2 className="text-3xl font-bold text-gray-900 mb-12">
+              Founder
+            </h2>
+
+            <div className="flex flex-col items-center">
+
+              {/* PROFILE IMAGE */}
+              <img
+                src="/founder.jpg"
+                alt="Founder"
+                className="w-48 h-48 rounded-full object-cover shadow-lg mb-6"
+              />
+
+              {/* NAME */}
+              <h3 className="text-2xl font-semibold">
+                Rifaz Shaikh Razak
+              </h3>
+
+              <p className="text-gray-500 mb-6">
+                Founder & CEO
+              </p>
+
+              {/* BIO */}
+              <p className="text-gray-600 max-w-2xl leading-relaxed">
+                Rifaz Shaikh Razak founded Fintech Loop with a vision to simplify
+                investing and bring institutional-grade tools to everyday
+                traders. With a background in trading systems and financial
+                technology, the goal is to build a transparent, scalable,
+                and secure brokerage ecosystem.
+              </p>
+
             </div>
 
           </div>
