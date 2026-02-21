@@ -5,7 +5,6 @@ import { getTransactions } from "../api/transactionsApi";
 import OrderForm from "../components/trading/OrderForm";
 import WalletCard from "../components/wallet/walletCard";
 
-// Currency formatter
 const formatCurrency = (value) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -16,12 +15,9 @@ export default function Dashboard() {
   const [balance, setBalance] = useState(null);
   const [holdings, setHoldings] = useState([]);
   const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const fetchDashboardData = async () => {
     try {
-      setLoading(true);
-
       const walletRes = await getWallet();
       setBalance(walletRes.data.balance);
 
@@ -31,7 +27,6 @@ export default function Dashboard() {
       const transactionsRes = await getTransactions();
       const txData = transactionsRes.data.data || [];
 
-      // Sort newest first
       txData.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
@@ -39,8 +34,6 @@ export default function Dashboard() {
       setTransactions(txData);
     } catch (error) {
       console.error("Dashboard fetch error:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -49,54 +42,85 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div className="bg-gray-100 min-h-screen p-8">
+      <div className="max-w-6xl mx-auto space-y-8">
 
-      {/* ORDER FORM */}
-      <OrderForm onOrderSuccess={fetchDashboardData} />
+        <h1 className="text-3xl font-semibold text-gray-800">
+          Dashboard
+        </h1>
 
-      <hr />
+        {/* ORDER FORM */}
+        <div className="bg-white p-6 rounded-2xl shadow border">
+          <OrderForm onOrderSuccess={fetchDashboardData} />
+        </div>
 
-      {/* WALLET */}
-      <WalletCard
-        balance={balance !== null ? formatCurrency(balance) : null}
-        loading={loading}
-        onRefresh={fetchDashboardData}
-      />
+        {/* GRID */}
+        <div className="grid md:grid-cols-2 gap-6">
 
-      <hr />
-
-      {/* HOLDINGS */}
-      <h2>Holdings</h2>
-      {holdings.length === 0 ? (
-        <p>No holdings</p>
-      ) : (
-        holdings.map((h) => (
-          <div key={h._id}>
-            <p>
-              {h.symbol} — Qty: {h.quantity} — Avg:{" "}
-              {formatCurrency(h.averagePrice)}
-            </p>
+          {/* WALLET */}
+          <div className="bg-white p-6 rounded-2xl shadow border">
+            <WalletCard
+              balance={balance !== null ? formatCurrency(balance) : "₹0.00"}
+              onRefresh={fetchDashboardData}
+            />
           </div>
-        ))
-      )}
 
-      <hr />
+          {/* HOLDINGS */}
+          <div className="bg-white p-6 rounded-2xl shadow border">
+            <h2 className="text-xl font-semibold mb-6">
+              Holdings
+            </h2>
 
-      {/* TRANSACTIONS */}
-      <h2>Transactions</h2>
-      {transactions.length === 0 ? (
-        <p>No transactions</p>
-      ) : (
-        transactions.map((t) => (
-          <div key={t._id}>
-            <p>
-              {t.type} — {formatCurrency(t.amount)} — Balance After:{" "}
-              {formatCurrency(t.balanceAfter)}
-            </p>
+            {holdings.length === 0 ? (
+              <p className="text-gray-500 text-sm">
+                No holdings available
+              </p>
+            ) : (
+              holdings.map((h) => (
+                <div
+                  key={h._id}
+                  className="grid grid-cols-3 py-3 border-b text-sm"
+                >
+                  <span className="font-medium">{h.symbol}</span>
+                  <span className="text-right">Qty: {h.quantity}</span>
+                  <span className="text-right">
+                    {formatCurrency(h.averagePrice)}
+                  </span>
+                </div>
+              ))
+            )}
           </div>
-        ))
-      )}
+        </div>
+
+        {/* TRANSACTIONS */}
+        <div className="bg-white p-6 rounded-2xl shadow border">
+          <h2 className="text-xl font-semibold mb-6">
+            Transactions
+          </h2>
+
+          {transactions.length === 0 ? (
+            <p className="text-gray-500 text-sm">
+              No transactions available
+            </p>
+          ) : (
+            transactions.map((t) => (
+              <div
+                key={t._id}
+                className="grid grid-cols-3 py-3 border-b text-sm"
+              >
+                <span className="font-medium">{t.type}</span>
+                <span className="text-right">
+                  {formatCurrency(t.amount)}
+                </span>
+                <span className="text-right text-gray-500">
+                  {formatCurrency(t.balanceAfter)}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+
+      </div>
     </div>
   );
 }

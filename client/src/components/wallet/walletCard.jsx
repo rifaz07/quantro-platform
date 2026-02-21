@@ -63,35 +63,58 @@ export default function WalletCard({ balance, loading, onRefresh }) {
   };
 
   return (
-    <div style={{ padding: "16px", border: "1px solid #ddd", borderRadius: "8px" }}>
-      <h2>Wallet Balance</h2>
-      <p style={{ fontSize: "20px", fontWeight: "bold" }}>
-        {loading ? "Loading..." : balance}
-      </p>
+    <div>
+      <h2 className="text-xl font-semibold tracking-tight mb-4">
+        Wallet Balance
+      </h2>
 
-      <input
-        type="number"
-        placeholder="Enter amount"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        disabled={submitting}
-        style={{ padding: "8px", marginRight: "8px" }}
-      />
+      {/* BALANCE PLACEHOLDER */}
+      {loading ? (
+        <div className="h-10 w-40 bg-gray-200 animate-pulse rounded-md mb-6" />
+      ) : (
+        <p className="text-3xl font-semibold text-gray-800 mb-6">
+          {balance || "₹0.00"}
+        </p>
+      )}
 
-      <button
-        onClick={handleDeposit}
-        disabled={submitting}
-        style={{ marginRight: "6px" }}
-      >
-        {submitting ? "Processing..." : "Deposit"}
-      </button>
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <input
+          type="number"
+          placeholder="Enter amount"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          disabled={submitting}
+          className="border border-gray-300 rounded-lg px-4 py-2 flex-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
 
-      <button onClick={handleWithdraw} disabled={submitting}>
-        {submitting ? "Processing..." : "Withdraw"}
-      </button>
+        <button
+          onClick={handleDeposit}
+          disabled={submitting}
+          className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition disabled:opacity-50"
+        >
+          {submitting ? "Processing..." : "Deposit"}
+        </button>
 
-      {error && <p style={{ color: "red", marginTop: "8px" }}>{error}</p>}
-      {success && <p style={{ color: "green", marginTop: "8px" }}>{success}</p>}
+        <button
+          onClick={handleWithdraw}
+          disabled={submitting}
+          className="bg-rose-600 text-white px-4 py-2 rounded-lg hover:bg-rose-700 transition disabled:opacity-50"
+        >
+          {submitting ? "Processing..." : "Withdraw"}
+        </button>
+      </div>
+
+      {error && (
+        <p className="text-rose-600 text-sm font-medium">
+          {error}
+        </p>
+      )}
+
+      {success && (
+        <p className="text-emerald-600 text-sm font-medium">
+          {success}
+        </p>
+      )}
     </div>
   );
 }

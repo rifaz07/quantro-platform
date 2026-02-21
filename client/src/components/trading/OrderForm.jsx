@@ -21,7 +21,6 @@ export default function OrderForm({ onOrderSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (submitting) return;
 
     if (!formData.symbol || !formData.quantity || !formData.price) {
@@ -56,16 +55,21 @@ export default function OrderForm({ onOrderSuccess }) {
 
   return (
     <div>
-      <h2>Place Order</h2>
+      <h2 className="text-xl font-semibold mb-6">
+        Place Order
+      </h2>
 
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-5 gap-4"
+      >
         <input
           type="text"
           name="symbol"
           placeholder="Symbol"
           value={formData.symbol}
           onChange={handleChange}
-          disabled={submitting}
+          className="border rounded-lg px-3 py-2"
         />
 
         <input
@@ -74,7 +78,7 @@ export default function OrderForm({ onOrderSuccess }) {
           placeholder="Quantity"
           value={formData.quantity}
           onChange={handleChange}
-          disabled={submitting}
+          className="border rounded-lg px-3 py-2"
         />
 
         <input
@@ -83,25 +87,37 @@ export default function OrderForm({ onOrderSuccess }) {
           placeholder="Price"
           value={formData.price}
           onChange={handleChange}
-          disabled={submitting}
+          className="border rounded-lg px-3 py-2"
         />
 
         <select
           name="type"
           value={formData.type}
           onChange={handleChange}
-          disabled={submitting}
+          className={`rounded-lg px-3 py-2 font-semibold text-white ${
+            formData.type === "BUY"
+              ? "bg-green-600"
+              : "bg-red-600"
+          }`}
         >
           <option value="BUY">BUY</option>
           <option value="SELL">SELL</option>
         </select>
 
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Processing..." : "Submit Order"}
+        <button
+          type="submit"
+          disabled={submitting}
+          className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition"
+        >
+          {submitting ? "Processing..." : "Submit"}
         </button>
       </form>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && (
+        <p className="text-red-500 mt-3 text-sm">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
