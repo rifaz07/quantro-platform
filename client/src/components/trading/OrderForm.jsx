@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { placeOrder } from "../../api/orderApi";
 
-export default function OrderForm({ onOrderSuccess }) {
+export default function OrderForm({ selectedSymbol, onOrderSuccess }) {
   const [formData, setFormData] = useState({
     symbol: "",
     quantity: "",
@@ -11,6 +11,16 @@ export default function OrderForm({ onOrderSuccess }) {
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  //THIS IS THE IMPORTANT PART
+  useEffect(() => {
+    if (selectedSymbol) {
+      setFormData((prev) => ({
+        ...prev,
+        symbol: selectedSymbol,
+      }));
+    }
+  }, [selectedSymbol]);
 
   const handleChange = (e) => {
     setFormData({

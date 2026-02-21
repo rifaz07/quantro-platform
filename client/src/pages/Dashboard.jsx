@@ -3,6 +3,7 @@ import { getWallet } from "../api/walletApi";
 import { getHoldings } from "../api/holdingsApi";
 import { getTransactions } from "../api/transactionsApi";
 import OrderForm from "../components/trading/OrderForm";
+import Watchlist from "../components/trading/Watchlist";
 import WalletCard from "../components/wallet/walletCard";
 
 const formatCurrency = (value) =>
@@ -15,6 +16,7 @@ export default function Dashboard() {
   const [balance, setBalance] = useState(null);
   const [holdings, setHoldings] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  const [selectedSymbol, setSelectedSymbol] = useState("");
 
   const fetchDashboardData = async () => {
     try {
@@ -43,18 +45,30 @@ export default function Dashboard() {
 
   return (
     <div className="bg-gray-100 min-h-screen p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-8">
 
         <h1 className="text-3xl font-semibold text-gray-800">
           Dashboard
         </h1>
 
-        {/* ORDER FORM */}
-        <div className="bg-white p-6 rounded-2xl shadow border">
-          <OrderForm onOrderSuccess={fetchDashboardData} />
+        {/* WATCHLIST + ORDER FORM */}
+        <div className="grid md:grid-cols-2 gap-6">
+
+          {/* WATCHLIST */}
+          <div className="bg-white p-6 rounded-2xl shadow border">
+            <Watchlist onSelect={setSelectedSymbol} />
+          </div>
+
+          {/* ORDER FORM */}
+          <div className="bg-white p-6 rounded-2xl shadow border">
+            <OrderForm
+              selectedSymbol={selectedSymbol}
+              onOrderSuccess={fetchDashboardData}
+            />
+          </div>
         </div>
 
-        {/* GRID */}
+        {/* WALLET + HOLDINGS */}
         <div className="grid md:grid-cols-2 gap-6">
 
           {/* WALLET */}
