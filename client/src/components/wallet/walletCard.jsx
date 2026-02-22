@@ -9,12 +9,10 @@ export default function WalletCard({ balance, loading, onRefresh }) {
 
   const validateAmount = () => {
     const num = Number(amount);
-
     if (!num || num <= 0) {
       setError("Enter a valid amount greater than 0");
       return false;
     }
-
     return true;
   };
 
@@ -22,14 +20,11 @@ export default function WalletCard({ balance, loading, onRefresh }) {
     if (submitting) return;
     setError("");
     setSuccess("");
-
     if (!validateAmount()) return;
 
     try {
       setSubmitting(true);
-
       await depositMoney({ amount: Number(amount) });
-
       setSuccess("Deposit successful");
       setAmount("");
       onRefresh();
@@ -44,14 +39,11 @@ export default function WalletCard({ balance, loading, onRefresh }) {
     if (submitting) return;
     setError("");
     setSuccess("");
-
     if (!validateAmount()) return;
 
     try {
       setSubmitting(true);
-
       await withdrawMoney({ amount: Number(amount) });
-
       setSuccess("Withdraw successful");
       setAmount("");
       onRefresh();
@@ -64,56 +56,54 @@ export default function WalletCard({ balance, loading, onRefresh }) {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold tracking-tight mb-4">
-        Wallet Balance
-      </h2>
+      <h2 className="text-base font-bold text-gray-900 mb-4">Wallet</h2>
 
-      {/* BALANCE PLACEHOLDER */}
-      {loading ? (
-        <div className="h-10 w-40 bg-gray-200 animate-pulse rounded-md mb-6" />
-      ) : (
-        <p className="text-3xl font-semibold text-gray-800 mb-6">
-          {balance || "₹0.00"}
+      {/* Balance */}
+      <div className="mb-5">
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+          Available Balance
         </p>
-      )}
+        {loading ? (
+          <div className="h-9 w-36 bg-gray-100 animate-pulse rounded-lg" />
+        ) : (
+          <p className="text-3xl font-bold text-gray-900 font-mono tracking-tight">
+            {balance || "₹0.00"}
+          </p>
+        )}
+      </div>
 
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+      {/* Input + Buttons */}
+      <div className="flex gap-2 mb-3">
         <input
           type="number"
           placeholder="Enter amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           disabled={submitting}
-          className="border border-gray-300 rounded-lg px-4 py-2 flex-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium focus:outline-none focus:border-blue-400 transition disabled:opacity-50 font-mono"
         />
-
         <button
           onClick={handleDeposit}
           disabled={submitting}
-          className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition disabled:opacity-50"
+          className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition disabled:opacity-50"
         >
-          {submitting ? "Processing..." : "Deposit"}
+          {submitting ? "..." : "Deposit"}
         </button>
-
         <button
           onClick={handleWithdraw}
           disabled={submitting}
-          className="bg-rose-600 text-white px-4 py-2 rounded-lg hover:bg-rose-700 transition disabled:opacity-50"
+          className="bg-red-50 text-red-500 border border-red-200 px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-100 transition disabled:opacity-50"
         >
-          {submitting ? "Processing..." : "Withdraw"}
+          {submitting ? "..." : "Withdraw"}
         </button>
       </div>
 
+      {/* Feedback */}
       {error && (
-        <p className="text-rose-600 text-sm font-medium">
-          {error}
-        </p>
+        <p className="text-red-500 text-xs font-medium">{error}</p>
       )}
-
       {success && (
-        <p className="text-emerald-600 text-sm font-medium">
-          {success}
-        </p>
+        <p className="text-green-600 text-xs font-medium">{success}</p>
       )}
     </div>
   );

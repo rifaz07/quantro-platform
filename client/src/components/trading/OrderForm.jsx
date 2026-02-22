@@ -12,21 +12,14 @@ export default function OrderForm({ selectedSymbol, onOrderSuccess }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  //THIS IS THE IMPORTANT PART
   useEffect(() => {
     if (selectedSymbol) {
-      setFormData((prev) => ({
-        ...prev,
-        symbol: selectedSymbol,
-      }));
+      setFormData((prev) => ({ ...prev, symbol: selectedSymbol }));
     }
   }, [selectedSymbol]);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -48,13 +41,7 @@ export default function OrderForm({ selectedSymbol, onOrderSuccess }) {
         price: Number(formData.price),
       });
 
-      setFormData({
-        symbol: "",
-        quantity: "",
-        price: "",
-        type: "BUY",
-      });
-
+      setFormData({ symbol: "", quantity: "", price: "", type: "BUY" });
       onOrderSuccess();
     } catch (err) {
       setError(err.response?.data?.message || "Order failed");
@@ -63,71 +50,121 @@ export default function OrderForm({ selectedSymbol, onOrderSuccess }) {
     }
   };
 
+  const totalCost =
+    formData.quantity && formData.price
+      ? Number(formData.quantity) * Number(formData.price)
+      : null;
+
+  const isBuy = formData.type === "BUY";
+
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-6">
-        Place Order
-      </h2>
+      <h2 className="text-base font-bold text-gray-900 mb-4">Place Order</h2>
 
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-5 gap-4"
-      >
-        <input
-          type="text"
-          name="symbol"
-          placeholder="Symbol"
-          value={formData.symbol}
-          onChange={handleChange}
-          className="border rounded-lg px-3 py-2"
-        />
-
-        <input
-          type="number"
-          name="quantity"
-          placeholder="Quantity"
-          value={formData.quantity}
-          onChange={handleChange}
-          className="border rounded-lg px-3 py-2"
-        />
-
-        <input
-          type="number"
-          name="price"
-          placeholder="Price"
-          value={formData.price}
-          onChange={handleChange}
-          className="border rounded-lg px-3 py-2"
-        />
-
-        <select
-          name="type"
-          value={formData.type}
-          onChange={handleChange}
-          className={`rounded-lg px-3 py-2 font-semibold text-white ${
-            formData.type === "BUY"
-              ? "bg-green-600"
-              : "bg-red-600"
+      {/* BUY / SELL Toggle */}
+      <div className="flex bg-gray-100 rounded-lg p-1 mb-5">
+        <button
+          type="button"
+          onClick={() => setFormData({ ...formData, type: "BUY" })}
+          className={`flex-1 py-2 text-sm font-bold rounded-md transition ${
+            isBuy
+              ? "bg-white text-green-600 shadow-sm"
+              : "text-gray-400 hover:text-gray-600"
           }`}
         >
-          <option value="BUY">BUY</option>
-          <option value="SELL">SELL</option>
-        </select>
+          ▲ BUY
+        </button>
+        <button
+          type="button"
+          onClick={() => setFormData({ ...formData, type: "SELL" })}
+          className={`flex-1 py-2 text-sm font-bold rounded-md transition ${
+            !isBuy
+              ? "bg-white text-red-500 shadow-sm"
+              : "text-gray-400 hover:text-gray-600"
+          }`}
+        >
+          ▼ SELL
+        </button>
+      </div>
 
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+
+        {/* Symbol */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+            Symbol
+          </label>
+          <input
+            type="text"
+            name="symbol"
+            placeholder="e.g. BTCUSD"
+            value={formData.symbol}
+            onChange={handleChange}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium text-gray-900 focus:outline-none focus:border-blue-400 transition"
+          />
+        </div>
+
+        {/* Quantity */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+            Quantity
+          </label>
+          <input
+            type="number"
+            name="quantity"
+            placeholder="0"
+            value={formData.quantity}
+            onChange={handleChange}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium text-gray-900 focus:outline-none focus:border-blue-400 transition font-mono"
+          />
+        </div>
+
+        {/* Price */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+            Price (₹)
+          </label>
+          <input
+            type="number"
+            name="price"
+            placeholder="0.00"
+            value={formData.price}
+            onChange={handleChange}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium text-gray-900 focus:outline-none focus:border-blue-400 transition font-mono"
+          />
+        </div>
+
+        {/* Total Cost */}
+        {totalCost !== null && (
+          <div className="flex justify-between items-center bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+              Total Cost
+            </span>
+            <span className="text-sm font-bold text-gray-900 font-mono">
+              ₹{totalCost.toLocaleString("en-IN")}
+            </span>
+          </div>
+        )}
+
+        {/* Error */}
+        {error && (
+          <p className="text-red-500 text-xs font-medium">{error}</p>
+        )}
+
+        {/* Submit */}
         <button
           type="submit"
           disabled={submitting}
-          className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition"
+          className={`w-full py-2.5 rounded-lg text-sm font-bold text-white transition disabled:opacity-60 ${
+            isBuy
+              ? "bg-green-600 hover:bg-green-700"
+              : "bg-red-500 hover:bg-red-600"
+          }`}
         >
-          {submitting ? "Processing..." : "Submit"}
+          {submitting ? "Processing..." : `Place ${isBuy ? "BUY" : "SELL"} Order`}
         </button>
-      </form>
 
-      {error && (
-        <p className="text-red-500 mt-3 text-sm">
-          {error}
-        </p>
-      )}
+      </form>
     </div>
   );
 }

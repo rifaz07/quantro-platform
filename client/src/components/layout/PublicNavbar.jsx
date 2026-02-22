@@ -6,8 +6,13 @@ export default function PublicNavbar() {
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
         {/* BRAND */}
-        <Link to="/" className="text-xl font-bold text-blue-600">
-          Fintech Loop
+        <Link to="/" className="flex items-center gap-2">
+          <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+            Q
+          </div>
+          <span className="text-lg font-bold text-gray-900">
+            Quan<span className="text-blue-600">tro</span>
+          </span>
         </Link>
 
         {/* NAV LINKS */}

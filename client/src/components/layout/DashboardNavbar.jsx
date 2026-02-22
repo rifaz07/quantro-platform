@@ -9,18 +9,27 @@ export default function DashboardNavbar() {
   };
 
   return (
-    <div className="bg-white border-b shadow-sm">
+    <div className="bg-white border-b border-gray-200">
       <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-4">
-        <h1 className="text-lg font-semibold text-gray-800">
-          Fintech Loop
-        </h1>
 
+        {/* LOGO */}
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+            Q
+          </div>
+          <span className="text-lg font-bold text-gray-900">
+            Quan<span className="text-blue-600">tro</span>
+          </span>
+        </div>
+
+        {/* LOGOUT */}
         <button
           onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded-md text-sm hover:bg-red-600 transition"
+          className="text-sm font-medium text-gray-500 border border-gray-200 px-4 py-2 rounded-lg hover:border-red-300 hover:text-red-500 transition"
         >
           Logout
         </button>
+
       </div>
     </div>
   );

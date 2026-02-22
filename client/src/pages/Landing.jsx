@@ -19,7 +19,7 @@ export default function Landing() {
             </h1>
 
             <p className="text-lg text-gray-600 mb-8">
-              Fintech Loop is a modern brokerage platform built for speed,
+              Quantro is a modern brokerage platform built for speed,
               transparency, and powerful analytics.
             </p>
 
