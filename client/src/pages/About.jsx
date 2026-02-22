@@ -17,7 +17,7 @@ export default function About() {
             </h1>
 
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Fintech Loop is reimagining trading platforms with cutting-edge
+              Quantro is reimagining trading platforms with cutting-edge
               technology, seamless execution, and powerful analytics.
             </p>
           </div>
@@ -86,7 +86,7 @@ export default function About() {
 
               {/* BIO */}
               <p className="text-gray-600 max-w-2xl leading-relaxed">
-                Rifaz Shaikh Razak founded Fintech Loop with a vision to simplify
+                Rifaz Shaikh Razak founded Quantro with a vision to simplify
                 investing and bring institutional-grade tools to everyday
                 traders. With a background in trading systems and financial
                 technology, the goal is to build a transparent, scalable,

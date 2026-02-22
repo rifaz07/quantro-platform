@@ -8,7 +8,7 @@ export default function PublicFooter() {
         {/* Brand */}
         <div>
           <h2 className="text-lg font-bold text-blue-600 mb-4">
-            FINTECH LOOP
+            QUANTRO
           </h2>
           <p>
             Modern brokerage platform built for transparency, simplicity, and speed.
@@ -47,7 +47,7 @@ export default function PublicFooter() {
       </div>
 
       <div className="text-center text-xs text-gray-500 py-4 border-t">
-        © {new Date().getFullYear()} Fintech Loop. All rights reserved.
+        © {new Date().getFullYear()} Quantro. All rights reserved.
       </div>
     </footer>
   );
