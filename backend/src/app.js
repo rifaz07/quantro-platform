@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 import authRoutes from "./routes/authRoutes.js";
 import errorHandler from "./middlewares/errorMiddleware.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -11,8 +12,23 @@ import holdingRoutes from "./routes/holdingRoutes.js";
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json());
+
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(limiter);
 
 // Routes
 app.use("/api/auth", authRoutes);

@@ -4,6 +4,11 @@ import connectDB from "./config/db.js";
 
 dotenv.config();
 
+if (!process.env.JWT_SECRET) {
+  console.error("JWT_SECRET missing in environment");
+  process.exit(1);
+}
+
 const PORT = process.env.PORT || 5000;
 
 connectDB();
