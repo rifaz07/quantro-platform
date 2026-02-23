@@ -28,6 +28,11 @@ const orderSchema = new mongoose.Schema(
       enum: ["BUY", "SELL"],
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["EXECUTED", "FAILED", "PENDING"],
+      default: "EXECUTED",
+    },
   },
   { timestamps: true }
 );
