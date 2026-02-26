@@ -28,7 +28,7 @@ export const placeOrder = async (req, res, next) => {
       return res.status(400).json({ message: "Invalid order type" });
     }
 
-    // Execute order via service
+    // Execute order service
     const result = await executeOrder({
       userId: req.user._id,
       symbol: symbol.toUpperCase(),

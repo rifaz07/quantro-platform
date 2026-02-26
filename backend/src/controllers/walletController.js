@@ -2,9 +2,7 @@ import mongoose from "mongoose";
 import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
 
-/**
- * GET WALLET BALANCE
- */
+/* GET WALLET BALANCE*/
 export const getBalance = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -22,9 +20,7 @@ export const getBalance = async (req, res) => {
 };
 
 
-/**
- * DEPOSIT MONEY
- */
+/* DEPOSIT MONEY*/
 export const depositFunds = async (req, res) => {
   let { amount } = req.body;
   amount = Number(amount);
@@ -74,9 +70,7 @@ export const depositFunds = async (req, res) => {
 };
 
 
-/**
- * WITHDRAW MONEY
- */
+/*WITHDRAW MONEY*/
 export const withdrawMoney = async (req, res) => {
   let { amount } = req.body;
   amount = Number(amount);
