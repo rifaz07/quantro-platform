@@ -9,7 +9,7 @@ It implements transactional order execution, wallet ledger accounting, portfolio
 
 | Service | URL |
 |----------|------|
-| Frontend | https://quantro-frontend.onrender.com |
+| Frontend | https://quantro-frontend-1.onrender.com |
 | Backend API | https://quantro-platform.onrender.com |
 
 > This is a demo system. Please use temporary credentials while testing.
