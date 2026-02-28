@@ -4,7 +4,7 @@ import { getHoldings } from "../api/holdingsApi";
 import { getTransactions } from "../api/transactionsApi";
 import OrderForm from "../components/trading/OrderForm";
 import Watchlist from "../components/trading/Watchlist";
-import WalletCard from "../components/wallet/WalletCard";
+import WalletCard from "../components/wallet/WalletCard.jsx";
 import DashboardNavbar from "../components/layout/DashboardNavbar";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
